@@ -16,7 +16,6 @@ class SaleOrder(models.Model):
             ("each", "For Each Donation"),
             ("annual", "Annual Tax Receipt"),
         ],
-        string="Tax Receipt Option",
         readonly=True,
         states={"draft": [("readonly", False)]},
     )
@@ -104,8 +103,10 @@ class SaleOrderLine(models.Model):
             if line.product_id and line.product_id.tax_receipt_ok and line.tax_id:
                 raise ValidationError(
                     _(
-                        "On the sale order '%s', the sale order line '%s' "
+                        "On the sale order '%(sale_order)s',"
+                        " the sale order line '%(order_line)s' "
                         "has a donation product, so it should not have taxes."
-                    )
-                    % (line.order_id.name, line.name)
+                    ),
+                    sale_order=line.order_id.name,
+                    order_line=line.name,
                 )

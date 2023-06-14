@@ -44,7 +44,6 @@ class AccountMove(models.Model):
             ("each", "For Each Donation"),
             ("annual", "Annual Tax Receipt"),
         ],
-        string="Tax Receipt Option",
         readonly=True,
         states={"draft": [("readonly", False)]},
         index=True,
@@ -87,12 +86,13 @@ class AccountMove(models.Model):
             if move.tax_receipt_id:
                 raise UserError(
                     _(
-                        "You cannot cancel the invoice '%s' because "
-                        "it is linked to the tax receipt %s. You should first "
+                        "You cannot cancel the invoice '%(display_name)s' because "
+                        "it is linked to the tax receipt %(number)s. You should first "
                         "delete this tax receipt (but it may not be legally "
-                        "allowed)."
+                        "allowed).",
+                        display_name=move.display_name,
+                        number=move.tax_receipt_id.number,
                     )
-                    % (move.display_name, move.tax_receipt_id.number)
                 )
         return super().button_cancel()
 
@@ -101,10 +101,12 @@ class AccountMove(models.Model):
             if move.tax_receipt_id:
                 raise UserError(
                     _(
-                        "You cannot delete the invoice '%s' because it is linked to "
-                        "the tax receipt %s."
+                        "You cannot delete the invoice '%(display_name)s' because"
+                        "it is linked to "
+                        "the tax receipt %(number)s.",
+                        display_name=move.display_name,
+                        number=move.tax_receipt_id.number,
                     )
-                    % (move.display_name, move.tax_receipt_id.number)
                 )
         return super().unlink()
 

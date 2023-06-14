@@ -45,11 +45,11 @@ class TestDonationSale(TransactionCase):
             "active_ids": [self.sale_order.id],
             "active_id": self.sale_order.id,
         }
-        self.sale_order.with_context(context).action_confirm()
+        self.sale_order.with_context(**context).action_confirm()
         for line in self.sale_order.order_line:
             line.write({"qty_delivered": line.product_uom_qty})
         payment = self.env["sale.advance.payment.inv"].create({})
-        payment.with_context(context).create_invoices()
+        payment.with_context(**context).create_invoices()
 
         self.invoice = self.sale_order.invoice_ids[0]
         self.invoice.action_post()

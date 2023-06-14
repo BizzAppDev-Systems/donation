@@ -21,7 +21,7 @@ class DonationTaxReceipt(models.Model):
     def update_tax_receipt_annual_dict(
         self, tax_receipt_annual_dict, start_date, end_date, company
     ):
-        super().update_tax_receipt_annual_dict(
+        res = super().update_tax_receipt_annual_dict(
             tax_receipt_annual_dict, start_date, end_date, company
         )
         moves = self.env["account.move"].search(
@@ -51,3 +51,4 @@ class DonationTaxReceipt(models.Model):
                 tax_receipt_annual_dict[partner]["extra_vals"]["invoice_ids"][0][
                     2
                 ].append(move.id)
+        return res
